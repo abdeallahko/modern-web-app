@@ -2,7 +2,8 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = path.join(__dirname, 'store.db');
+// تم تغيير الاسم ليتطابق مع إعدادات التجاهل وهوية المتجر
+const dbPath = path.join(__dirname, 'ageecom.db');
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
@@ -88,7 +89,7 @@ db.serialize(() => {
           stock: 15,
           rating: 4.9,
           reviewsCount: 84,
-          description: "حاسوب محمول بمعالج شاشة OLED مقاس 15.6 بوصة ومعالج ثماني النواة عالي السرعة، مع 32 جيجابايت ذاكرة عشوائية وتصميم ألومنيوم عصري.",
+          description: "حاسوب محمول بشاشة OLED مقاس 15.6 بوصة ومعالج ثماني النواة عالي السرعة، مع 32 جيجابايت ذاكرة عشوائية وتصميم ألومنيوم عصري.",
           image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80",
           badge: "الأكثر مبيعاً"
         },
@@ -110,7 +111,7 @@ db.serialize(() => {
           stock: 20,
           rating: 4.7,
           reviewsCount: 92,
-          description: "مقاومة للماء بعمق 50 متر، شاشة AMOLED، ومستشعرات قاطعة لقياس دقات القلب، الأكسجين، وتتبع أنشطة التمارين.",
+          description: "مقاومة للماء بعمق 50 متر، شاشة AMOLED، ومستشعرات لقياس دقات القلب، الأكسجين، وتتبع أنشطة التمارين.",
           image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
           badge: "جديد"
         },
@@ -143,7 +144,7 @@ db.serialize(() => {
           stock: 50,
           rating: 4.5,
           reviewsCount: 63,
-          description: "تحكم عبر تطبيق الهاتف والمساعدات الصوتية (Alexa / Google Assistant) مع 16 مليون لون متاح.",
+          description: "تحكم عبر تطبيق الهاتف والمساعدات الصوتية مع 16 مليون لون متاح.",
           image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600&auto=format&fit=crop&q=80",
           badge: "شائع"
         },
@@ -154,7 +155,7 @@ db.serialize(() => {
           stock: 18,
           rating: 4.8,
           reviewsCount: 110,
-          description: "مفاتيح ميكانيكية فائقة الاستجابة، إضاءة RGB قابلة للتخصيص وهيكل معدني متين لأداء ممتاز في الألعاب والعمل.",
+          description: "مفاتيح ميكانيكية فائقة الاستجابة، إضاءة RGB قابلة للتخصيص وهيكل معدني متين لأداء ممتاز.",
           image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80",
           badge: ""
         },
@@ -165,7 +166,7 @@ db.serialize(() => {
           stock: 40,
           rating: 4.7,
           reviewsCount: 89,
-          description: "منصة شحن مغناطيسية تتيح شحن الهاتف، الساعة الذكية، والسماعات اللاسلكية في نفس الوقت بقوة 15 واط.",
+          description: "منصة شحن مغناطيسية تتيح شحن الهاتف، الساعة الذكية، والسماعات اللاسلكية في نفس الوقت.",
           image: "https://images.unsplash.com/photo-1622445268141-ef4b16ea5cc3?w=600&auto=format&fit=crop&q=80",
           badge: "خصم 10%"
         }

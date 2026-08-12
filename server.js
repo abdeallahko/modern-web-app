@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const db = require('./database');
 
 const app = express();
@@ -8,7 +9,12 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// التأكد من وجود مجلد public قبل استخدامه لتجنب الأخطاء
+const publicPath = path.join(__dirname, 'public');
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+}
 
 // ----------------------------------------------------
 // API ROUTES
@@ -122,7 +128,6 @@ app.post('/api/orders', (req, res) => {
     return res.status(400).json({ error: 'بيانات طلب الشراء غير مكتملة' });
   }
 
-  // Calculate totals backend-side to ensure security
   let subtotal = 0;
   items.forEach(item => {
     subtotal += item.price * item.quantity;
@@ -132,11 +137,10 @@ app.post('/api/orders', (req, res) => {
   if (promoCode === 'PROMO10') discount = subtotal * 0.10;
   if (promoCode === 'APEX20') discount = subtotal * 0.20;
 
-  const tax = (subtotal - discount) * 0.14; // 14% VAT
+  const tax = (subtotal - discount) * 0.14; 
   const total = subtotal - discount + tax;
   const orderCode = 'APX-' + Math.floor(100000 + Math.random() * 900000);
 
-  // Insert Order
   const sqlOrder = `
     INSERT INTO orders (orderCode, customerName, email, address, city, paymentMethod, subtotal, discount, tax, total, status)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Processing')
@@ -146,7 +150,6 @@ app.post('/api/orders', (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     const orderId = this.lastID;
 
-    // Insert Order Items and Update Product Stocks
     const stmtItem = db.prepare(`
       INSERT INTO order_items (orderId, productId, productName, quantity, unitPrice)
       VALUES (?, ?, ?, ?, ?)
@@ -207,11 +210,17 @@ app.get('/api/stats', (req, res) => {
   });
 });
 
-// Serve frontend for all unmatched GET routes
+// Serve frontend for all unmatched GET routes (مع حماية إضافية)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  const indexPath = path.join(__dirname, 'public', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('عذراً، مجلد الواجهة الأمامية (public) أو ملف index.html غير موجود. واجهات الـ API تعمل بنجاح.');
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Apex Store Server is running live on http://localhost:${PORT}`);
+// ربط الخادم بالـ 0.0.0.0 ليقبله أي مضيف سحابي
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is running live on port ${PORT}`);
 });
