@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Store | متجر الإلكترونيات العصرية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header Nav -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="logo-area">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">APEX<span class="logo-highlight">STORE</span></span>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="ابحث عن أجهزة، سماعات، حواسيب..." />
+      </div>
+
+      <!-- Nav Actions -->
+      <div class="nav-actions">
+        <button id="ordersBtn" class="btn btn-outline" title="سجل الطلبات">
+          <span>📦 الطلبات</span>
+        </button>
+        <button id="adminBtn" class="btn btn-outline" title="لوحة المشرف">
+          <span>⚙️ المشرف</span>
+        </button>
+        <button id="cartBtn" class="btn btn-primary cart-trigger">
+          <span>🛒 السلة</span>
+          <span id="cartCountBadge" class="badge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+      <span class="hero-tag">✨ التكنولوجيا المستقبلية بين يديك</span>
+      <h1>اكتشف أحدث التقنيات والسماعات والأجهزة الذكية</h1>
+      <p>عروض مميزة، شحن سريع، وضمان جودة مع تجربة شراء سلسة وآمنة.</p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">+10k</span>
+          <span class="stat-lbl">عميل سعيد</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-lbl">ضمان جودة</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">24/7</span>
+          <span class="stat-lbl">دعم متواصل</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="container main-layout">
+    
+    <!-- Controls Bar (Categories & Filters) -->
+    <div class="controls-bar">
+      <div class="categories-tabs" id="categoriesContainer">
+        <!-- Dynamically rendered categories -->
+      </div>
+      
+      <div class="filter-group">
+        <select id="sortSelect" class="form-select">
+          <option value="default">الأحدث</option>
+          <option value="price-low">السعر: من الأقل للأعلى</option>
+          <option value="price-high">السعر: من الأعلى للأقل</option>
+          <option value="rating">الأعلى تقييماً</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="productsGrid">
+      <div class="loading-spinner">جاري تحميل المنتجات من قاعدة البيانات...</div>
+    </div>
+  </main>
+
+  <!-- Slide-Out Cart Drawer -->
+  <div class="drawer-backdrop" id="cartBackdrop"></div>
+  <aside class="drawer" id="cartDrawer">
+    <div class="drawer-header">
+      <h3>🛒 سلة المشتريات (<span id="cartTotalItems">0</span>)</h3>
+      <button class="close-btn" id="closeCartBtn">&times;</button>
+    </div>
+    
+    <div class="drawer-body" id="cartItemsContainer">
+      <!-- Cart items rendered dynamically -->
+    </div>
+
+    <div class="drawer-footer">
+      <div class="promo-box">
+        <input type="text" id="promoInput" placeholder="كود الخصم (مثال: PROMO10)" />
+        <button id="applyPromoBtn" class="btn btn-secondary">تطبيق</button>
+      </div>
+      <div id="promoNotice" class="promo-notice"></div>
+
+      <div class="summary-line">
+        <span>المجموع الفرعي:</span>
+        <span id="cartSubtotal">$0.00</span>
+      </div>
+      <div class="summary-line discount-line" id="discountRow" style="display:none;">
+        <span>الخصم المطبق:</span>
+        <span id="cartDiscount" class="text-success">-$0.00</span>
+      </div>
+      <div class="summary-line">
+        <span>الضريبة (14% VAT):</span>
+        <span id="cartTax">$0.00</span>
+      </div>
+      <div class="summary-line total-line">
+        <span>الإجمالي النهائي:</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+
+      <button id="checkoutBtn" class="btn btn-primary btn-block">
+        إتمام الشراء الآن 🚀
+      </button>
+    </div>
+  </aside>
+
+  <!-- Checkout Modal -->
+  <div class="modal-backdrop" id="checkoutModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>💳 إتمام طلب الشراء</h3>
+        <button class="close-btn" id="closeCheckoutBtn">&times;</button>
+      </div>
+      <form id="checkoutForm" class="modal-body">
+        <div class="form-group">
+          <label>الاسم الكامل *</label>
+          <input type="text" id="custName" class="form-input" placeholder="محمد أحمد" required />
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني *</label>
+          <input type="email" id="custEmail" class="form-input" placeholder="name@example.com" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>العنوان التفصيلي *</label>
+            <input type="text" id="custAddress" class="form-input" placeholder="شارع الملك فهد، حي العليا" required />
+          </div>
+          <div class="form-group flex-1">
+            <label>المدينة *</label>
+            <input type="text" id="custCity" class="form-input" value="الرياض" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>طريقة الدفع</label>
+          <select id="paymentMethod" class="form-select">
+            <option value="Credit Card">بطاقة ائتمان / Mada (محاكاة دفع دقيقة)</option>
+            <option value="Apple Pay">Apple Pay</option>
+            <option value="Cash on Delivery">الدفع عند الاستلام</option>
+          </select>
+        </div>
+
+        <div class="checkout-summary-box">
+          <h4>مجموع الطلب: <span id="checkoutFinalAmount">$0.00</span></h4>
+          <p class="small-text">سيتم خصم الكميات تلقائياً من مخزون قاعدة البيانات SQLite.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">تأكيد وإرسال الطلب ✅</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Order Receipt Success Modal -->
+  <div class="modal-backdrop" id="receiptModal">
+    <div class="modal-card text-center">
+      <div class="success-icon">🎉</div>
+      <h2>تم إتمام الطلب بنجاح!</h2>
+      <p>رقم الطلب الخص بك هو: <strong id="receiptCode" class="highlight-code">APX-000000</strong></p>
+      <div class="receipt-details" id="receiptContent">
+        <!-- Dynamic receipt details -->
+      </div>
+      <button id="closeReceiptBtn" class="btn btn-primary">متابعة التسوق 🛍️</button>
+    </div>
+  </div>
+
+  <!-- Orders History Modal -->
+  <div class="modal-backdrop" id="ordersModal">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <h3>📦 سجل الطلبات من قاعدة البيانات</h3>
+        <button class="close-btn" id="closeOrdersBtn">&times;</button>
+      </div>
+      <div class="modal-body" id="ordersListContainer">
+        <div class="loading-spinner">جاري تحميل سجل الطلبات...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Panel Modal -->
+  <div class="modal-backdrop" id="adminModal">
+    <div class="modal-card modal-wide">
+      <div class="modal-header">
+        <h3>⚙️ لوحة التحكم وإدارة قاعدة البيانات</h3>
+        <button class="close-btn" id="closeAdminBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Live Backend Stats -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <span class="stat-icon">💰</span>
+            <div>
+              <span class="stat-val" id="adminRevenue">$0.00</span>
+              <span class="stat-lbl">إجمالي الإيرادات</span>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <span class="stat-icon">🛒</span>
+            <div>
+              <span class="stat-val" id="adminOrdersCount">0</span>
+              <span class="stat-lbl">عدد الطلبات</span>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <span class="stat-icon">📦</span>
+            <div>
+              <span class="stat-val" id="adminProductsCount">0</span>
+              <span class="stat-lbl">عدد المنتجات</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Add New Product Form -->
+        <h4>إضافة منتج جديد لقاعدة البيانات (POST /api/products)</h4>
+        <form id="addProductForm" class="admin-form">
+          <div class="form-row">
+            <input type="text" id="newProdName" placeholder="اسم المنتج *" class="form-input" required />
+            <select id="newProdCategory" class="form-select" required>
+              <option value="electronics">إلكترونيات</option>
+              <option value="audio">سماعات وصوتيات</option>
+              <option value="wearables">ساعات وذكية</option>
+              <option value="smarthome">منزل ذكي</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <input type="number" step="0.01" id="newProdPrice" placeholder="السعر ($) *" class="form-input" required />
+            <input type="number" id="newProdStock" placeholder="الكمية بالمخزون *" class="form-input" required />
+            <input type="text" id="newProdBadge" placeholder="شارة (مثال: جديد / خصم)" class="form-input" />
+          </div>
+          <div class="form-group">
+            <input type="url" id="newProdImage" placeholder="رابط صورة المنتج (URL)" class="form-input" />
+          </div>
+          <div class="form-group">
+            <textarea id="newProdDesc" placeholder="وصف المنتج التفصيلي..." class="form-input" rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn btn-secondary">إضافة المنتج فورياً ✅</button>
+        </form>
+
+        <hr class="divider" />
+
+        <!-- Existing Products Table -->
+        <h4>إدارة المنتجات والمخزون الحالي</h4>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>المنتج</th>
+                <th>الفئة</th>
+                <th>السعر</th>
+                <th>المخزون</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminProductsTable">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p>© 2026 APEX STORE - تطبيق متكامل مبني بواسطة <strong>Antigravity AI Platform</strong> (Express + SQLite + Modern Glassmorphism UI)</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
